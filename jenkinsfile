@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'M2'
-        jdk 'JDK17'
+        maven 'M2'       // Jenkins Maven tool name
+        jdk 'JDK17'      // Jenkins JDK name
     }
 
     environment {
         TOMCAT_URL = 'http://localhost:9090/manager/text'
-        TOMCAT_USER = 'admin'
-        TOMCAT_PASS = 'admin123'
+        TOMCAT_USER = 'tomcat'
+        TOMCAT_PASS = 'tomcat123'
         APP_NAME = 'java11-examples'
     }
 
