@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'M2'
+        jdk 'JDK17'
+    }
+
+    environment {
+        TOMCAT_URL = 'http://localhost:9090/manager/text'
+        TOMCAT_USER = 'admin'
+        TOMCAT_PASS = 'admin123'
+        APP_NAME = 'java11-examples'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/chaitanyaprabha/java11-examples.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                sh '''
+                curl -u $TOMCAT_USER:$TOMCAT_PASS \
+                -T target/$APP_NAME.war \
+                "$TOMCAT_URL/deploy?path=/$APP_NAME&update=true"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Build and deployment successful!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
